@@ -11,7 +11,7 @@ class Picture:
 
     def tile(self, n=None):
         """ n represents nth tile of size tile_zize square """
-        if n:
+        if isinstance(n, int):
             self.current_tile = n
         else:
             n = self.current_tile
@@ -20,13 +20,21 @@ class Picture:
         y = y % (self.shape[1] - self.tile_size + 1)
 
         class Tile:
+            class Centre:
+                def __init__(self, x, y):
+                    self.x = x
+                    self.y = y
+
+                def shit(self):
+                    pass
+
             def __init__(self):
                 pass
 
             def set_input(self, tile):
                 self.input = tile
                 len = tile.shape[0]
-                self.input_pixel = tile[int((len-1)/2)][int((len-1)/2)]
+                self.input_pixel = tile[int((len - 1) / 2)][int((len - 1) / 2)]
 
             def set_red(self, tile):
                 self.red = tile
@@ -43,6 +51,9 @@ class Picture:
             def set_output(self, pixel):
                 self.output = pixel
 
+            def set_centre(self, x, y):
+                self.centre = self.Centre(x=x, y=y)
+
             def __bool__(self):
                 return True
 
@@ -54,10 +65,12 @@ class Picture:
         result.set_grey(self.grey[x:x + self.tile_size, y:y + self.tile_size])
         if hasattr(self, 'output'):
             result.set_output(self.output[x + int((self.tile_size - 1) / 2), y + int((self.tile_size - 1) / 2)])
-            print(x + int((self.tile_size - 1) / 2), y + int((self.tile_size - 1) / 2))
+            # print(x + int((self.tile_size - 1) / 2), y + int((self.tile_size - 1) / 2))
+        result.set_centre(x + int((self.tile_size - 1) / 2), y + int((self.tile_size - 1) / 2))
         return result
 
     def next_tile(self):
+        pass
         if self.current_tile >= (self.shape[0] - self.tile_size + 1) * (self.shape[1] - self.tile_size + 1):
             return False
         result = self.tile()

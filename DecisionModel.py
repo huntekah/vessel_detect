@@ -7,6 +7,7 @@ from picture import Picture
 import warnings
 import cv2
 
+
 def get_image(path, asgrey=True, _flatten=False):
     return io.imread(path, as_grey=asgrey, flatten=_flatten)
 
@@ -65,8 +66,14 @@ class Picture_decision:
             tile_average_model = 2
             hu_model = 3,4,5,6"""
         # several decision models
+        self.build_pixel_decision_models(train)
+        self.build_tile_decision_models(train)
+
+    def build_pixel_decision_models(self, train=False):
         self.pixel_color_model(0, train)
         self.pixel_average_model(1, train)
+
+    def build_tile_decision_models(self, train=False):
         self.tile_average_model(2, train)
         self.hu_model(3, train)  # 3 .. 6
 
@@ -123,16 +130,16 @@ class Picture_decision:
                 self.decision_Y[index + 3].append(int(tile.output))
 
             tile = self.picture.next_tile()
-        # print(np.any(np.isnan(self.decision_X[index])))
-        # print(np.all(np.isfinite(self.decision_X[index])))
-        # # where_are_inf = ~np.isfinite(self.decision_X[index])
-        # # where_are_nan = ~np.isnan(self.decision_X[index]
-        # self.decision_X[index] = np.nan_to_num(self.decision_X[index])
-        # self.decision_X[index + 1] = np.nan_to_num(self.decision_X[index + 1])
-        # self.decision_X[index + 2] = np.nan_to_num(self.decision_X[index + 2])
-        # self.decision_X[index + 3] = np.nan_to_num(self.decision_X[index + 3])
-        # print(np.any(np.isnan(self.decision_X[index])))
-        # print(np.all(np.isfinite(self.decision_X[index])))
+            # print(np.any(np.isnan(self.decision_X[index])))
+            # print(np.all(np.isfinite(self.decision_X[index])))
+            # # where_are_inf = ~np.isfinite(self.decision_X[index])
+            # # where_are_nan = ~np.isnan(self.decision_X[index]
+            # self.decision_X[index] = np.nan_to_num(self.decision_X[index])
+            # self.decision_X[index + 1] = np.nan_to_num(self.decision_X[index + 1])
+            # self.decision_X[index + 2] = np.nan_to_num(self.decision_X[index + 2])
+            # self.decision_X[index + 3] = np.nan_to_num(self.decision_X[index + 3])
+            # print(np.any(np.isnan(self.decision_X[index])))
+            # print(np.all(np.isfinite(self.decision_X[index])))
 
     def get_hu(self, image):
         hu = cv2.HuMoments(cv2.moments(image)).flatten()
@@ -145,13 +152,14 @@ class Picture_decision:
         log_hu = -np.sign(hu) * np.log10(np.abs(hu))
         return log_hu
 
+
 def build_all_core_models():
-    for tile_size in range(19, 51, 2 ):
+    for tile_size in range(1, 51, 2):
         decisions = Picture_decision("Train/input/im01.ppm", "Train/output/m_im01.ppm", tile_size=tile_size)
         decisions.build_decision_model(train=True)
         for i in range(3, 19, 2):
             decisions.set_picture("Train/input/im%.2d.ppm" % i, "Train/output/m_im%.2d.ppm" % i)
-            print("Train/input/im%.2d.ppm"%i)
+            print("Train/input/im%.2d.ppm" % i)
             decisions.build_decision_model(train=True)
         for depth in range(3, 16):
             model = Cart(depth)
@@ -175,7 +183,7 @@ if __name__ == "__main__":
     #     model.save_clf("CART/model_%.2d" % model_ID)
     # print("finish?")
     build_all_core_models()
-    #x = [[0, 1, 0], [0, 0, 1], [5, 0, 0]]
+    # x = [[0, 1, 0], [0, 0, 1], [5, 0, 0]]
     # x = np.zeros((2,2), dtype=np.double)
     # x[0, 0] = 1
     # x[0, 1] = 10

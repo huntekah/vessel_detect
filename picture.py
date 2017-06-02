@@ -15,9 +15,9 @@ class Picture:
             self.current_tile = n
         else:
             n = self.current_tile
-        x = int(n % (self.shape[0] - self.tile_size + 1))
-        y = int(np.floor(n / (self.shape[0] - self.tile_size + 1)))
-        y = y % (self.shape[1] - self.tile_size + 1)
+        y = int(n % (self.shape[1] - self.tile_size + 1))
+        x = int(np.floor(n / (self.shape[1] - self.tile_size + 1)))
+        x = x % (self.shape[0] - self.tile_size + 1)
 
         class Tile:
             class Centre:
@@ -71,7 +71,7 @@ class Picture:
 
     def next_tile(self):
         pass
-        if self.current_tile >= (self.shape[0] - self.tile_size + 1) * (self.shape[1] - self.tile_size + 1):
+        if self.current_tile >= (self.shape[0] - self.tile_size + 1) * (self.shape[1] - self.tile_size + 1) - 1:
             return False
         result = self.tile()
         self.current_tile += 1
